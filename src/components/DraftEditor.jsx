@@ -1,6 +1,4 @@
 import { useState } from 'react'
-// FIX: useEffect needed for guard registration
-// import { useEffect } from 'react'
 // FIX: import the guard hook
 // import { useUnsavedChanges } from '../hooks/useUnsavedChanges.js'
 
@@ -9,26 +7,19 @@ const EMPTY_DRAFT = { title: '', body: '' }
 /**
  * A simple post editor that keeps its draft in local state.
  *
- * BUG: Back, refresh, or any nav link unmounts this component and the
- * draft is silently discarded. Uncomment the FIX lines to guard it.
+ * BUG: Back, refresh, or any nav link reloads the page and the draft is
+ * silently discarded. Uncomment the FIX lines to guard it.
  */
-// eslint-disable-next-line no-unused-vars -- used once FIX is enabled
-export default function DraftEditor({ onRegisterGuard }) {
+export default function DraftEditor() {
   const [draft, setDraft] = useState(EMPTY_DRAFT)
   const [saved, setSaved] = useState(EMPTY_DRAFT)
 
   // FIX: dirty = draft differs from last save
   const isDirty = draft.title !== saved.title || draft.body !== saved.body
 
-  // FIX: enable all leave-page warnings
-  // const confirmLeave = useUnsavedChanges(isDirty)
-
-  // FIX: share guard with app nav links
-  // useEffect(() => {
-  //   onRegisterGuard(() => confirmLeave)
-  //   return () => onRegisterGuard(null)
-  // }, [confirmLeave, onRegisterGuard])
-  // BUG: no guard registered, nav always proceeds
+  // BUG: nothing warns before leaving
+  // FIX: warn before leaving while dirty
+  // useUnsavedChanges(isDirty)
 
   const update = (field) => (event) =>
     setDraft((current) => ({ ...current, [field]: event.target.value }))
