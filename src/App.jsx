@@ -1,7 +1,7 @@
 import DraftEditor from './components/DraftEditor.jsx'
 import './App.css'
 
-// Plain links = full page loads, so Back/links/refresh all fire beforeunload
+// Demo setup (not a fix): plain links = full page loads, so Back/links/refresh all fire beforeunload
 const view = new URLSearchParams(window.location.search).get('view') ?? 'home'
 
 function App() {

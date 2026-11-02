@@ -1,5 +1,5 @@
 import { useState } from 'react'
-// FIX: import the guard hook
+// FIX 1: import the guard hook
 // import { useUnsavedChanges } from '../hooks/useUnsavedChanges.js'
 
 const EMPTY_DRAFT = { title: '', body: '' }
@@ -8,17 +8,17 @@ const EMPTY_DRAFT = { title: '', body: '' }
  * A simple post editor that keeps its draft in local state.
  *
  * BUG: Back, refresh, or any nav link reloads the page and the draft is
- * silently discarded. Uncomment the FIX lines to guard it.
+ * silently discarded with no warning.
+ * FIX 1-2 go here, FIX 3-9 go in hooks/useUnsavedChanges.js.
  */
 export default function DraftEditor() {
   const [draft, setDraft] = useState(EMPTY_DRAFT)
+  // eslint-disable-next-line no-unused-vars -- read once FIX 2 is typed
   const [saved, setSaved] = useState(EMPTY_DRAFT)
 
-  // FIX: dirty = draft differs from last save
-  const isDirty = draft.title !== saved.title || draft.body !== saved.body
-
   // BUG: nothing warns before leaving
-  // FIX: warn before leaving while dirty
+  // FIX 2: detect unsaved input, then turn on the warning
+  // const isDirty = draft.title !== saved.title || draft.body !== saved.body
   // useUnsavedChanges(isDirty)
 
   const update = (field) => (event) =>
@@ -26,7 +26,7 @@ export default function DraftEditor() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    setSaved(draft) // saving clears the dirty flag
+    setSaved(draft) // saving makes draft match saved
   }
 
   return (
@@ -49,12 +49,8 @@ export default function DraftEditor() {
       </label>
 
       <div className="editor-footer">
-        <span className={isDirty ? 'status dirty' : 'status'}>
-          {isDirty ? 'Unsaved changes' : 'All changes saved'}
-        </span>
-        <button type="submit" disabled={!isDirty}>
-          Save draft
-        </button>
+        <span className="status">Drafts are only kept until you leave the page</span>
+        <button type="submit">Save draft</button>
       </div>
     </form>
   )
